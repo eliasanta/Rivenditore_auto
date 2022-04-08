@@ -1,0 +1,177 @@
+<html>
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    </head>
+
+    <body>
+        <div class="container">
+
+            
+            <div class="row">
+                <div class="col-md-4 card">
+                    <div class="card-body">
+                        <h3>Scegli Visualizzazione libro</h3>
+                        <select class="form-control" onchange="cambioVisualizzazione(this)">
+                            <option value="-1">TUTTI</option>
+                            <option value="0">ENTRATE</option>
+                            <option value="1">USCITE</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4 card">
+                    <div class="card-body">
+                        <h3>Cerca Cliente</h3>
+                        <div class="row">
+                        <div class="col-md-8 col-sm-12">
+                            <input type="text" class="form-control" id="cercaCliente" placeholder="cerca.." />
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                                <button class="btn btn-success" onclick="cercaCliente()" >CERCA</button>
+                        </div></div>
+                    </div>
+                </div>
+                <div class="col-md-4 card">
+                    <div class="card-body">
+                        <h3>Visualizza Guadagno di Oggi</h3>
+                        <button class="btn btn-primary" onclick="guadagnoGiornaliero()">GUADAGNO GIORNALIERO</button>
+                        <p id="guadagno"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-5">
+                <div class="col-lg-12 col-md-12">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12"> 
+                            <h3>Libro Contabile</h3>
+                        </div>
+                        <div class="col-md-6 col-sm-12" style="text-align: right"> 
+                            <button type="button" style="width: 150px;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#creaModal"> NUOVO </button> 
+                        </div> 
+                    </div>
+                    <table class="table table-striped text-center">
+                        <thead>
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Data</th>
+                                <th>Descrizione</th>
+                                <th>Importo</th>
+                                <th>IVA</th>
+                                <th>Tipo di Spesa</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody id="libro"></tbody>
+                    </table>
+                </div>
+            </div>
+   
+
+            <div class="modal fade" id="creaModal" tabindex="-1" aria-labelledby="creaModallabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form onsubmit="return addRiga()">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="creaModallabel">Inserisci Nuovo</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div> 
+                            <div class="modal-body"> 
+                                <div class="form-group">
+                                    <label>Cliente</label>
+                                    <select class="form-control" id="listaUtenti" ></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data</label>
+                                    <input class="form-control" type="date" id="data" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrizione</label>
+                                    <input class="form-control" type="text" id="descrizione" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label>Importo</label>
+                                    <input class="form-control" type="number" min="0" id="importo" required/>
+                                </div>
+                                <div class="form-group">
+                                    <label>IVA</label>
+                                    <input class="form-control" type="number" min="0" id="iva" required/>
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label>Tipo di Operazione</label>
+                                    <select class="form-control" id="tipoOperazione" required>
+                                        <option value="in">INGRESSO</option>
+                                        <option value="out">USCITA</option>
+                                    </select>
+                                </div>  
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CHIUDI</button>
+                            <button type="submit" class="btn btn-primary" >SALVA</button>
+                        </div>
+                        </form> 
+                    </div>
+                </div>
+            </div> 
+       
+              
+        <div class="modal fade" id="modificaModal" tabindex="-1" aria-labelledby="modificaModallabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form onsubmit="return salvaModifica()">
+                            
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="creaModallabel">Modifica</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div> 
+                        <div class="modal-body"> 
+                               <input type="hidden" id="key" />
+                               <div class="form-group">
+                                    <label>Cliente</label>
+                                    <select class="form-control" id="listaUtentiModifica" ></select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Data</label>
+                                    <input class="form-control" type="date" id="dataModifica" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Descrizione</label>
+                                    <input  class="form-control" type="text" id="descrizioneModifica" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Importo</label>
+                                    <input class="form-control"type="number" min="0" id="importoModifica" />
+                                </div>
+                                <div class="form-group">
+                                    <label>IVA</label>
+                                    <input class="form-control" type="number" min="0" id="ivaModifica" />
+                                </div>
+                    
+                                <div class="form-group">
+                                    <label>Tipo di Operazione</label>
+                                    <select class="form-control" id="tipoOperazioneModifica">
+                                        <option value="in">INGRESSO</option>
+                                        <option value="out">USCITA</option>
+                                    </select>
+                                </div> 
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CHIUDI</button>
+                            <button type="submit" class="btn btn-primary" >AGGIORNA</button>
+                        </div>
+                    </form> 
+                </div>
+            </div>
+        </div> 
+    
+             
+
+        </div>
+
+        <script src="libroContabile.js"></script>
+        <script src="script.js"></script>
+        
+    </body>
+</html>
